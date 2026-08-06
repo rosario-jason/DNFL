@@ -1,24 +1,24 @@
 // dnfl-api-client.js
 const DNFLClient = {
-    // Points directly to your secure, branded Render proxy cache subdomain
     baseUrl: "https://api.dnfl.live/api",
 
-    // Central fetch interface to connect your components to your server cache
     async fetchData(endpoint) {
-        // 1. Gather browser context variables natively supplied by MFL (defaults to null if missing)
+        // 1. Gather browser context variables natively supplied by MFL layout engine
         const leagueId = window.league_id || null; 
         const year     = window.current_year || null;
         const myTeam   = window.franchise_id || null;
+        
+        // DYNAMIC UPGRADE: Automatically read the active user's long-lived session key token
+        const dynamicUserKey = window.apiKey || null;
 
         // 2. Dynamically construct the query string using only available values
         let queryParts = [];
-        if (leagueId) queryParts.push(`L=${leagueId}`);
-        if (year)     queryParts.push(`YEAR=${year}`);
-        if (myTeam)   queryParts.push(`MY_FRANCHISE=${myTeam}`);
+        if (leagueId)       queryParts.push(`L=${leagueId}`);
+        if (year)           queryParts.push(`YEAR=${year}`);
+        if (myTeam)         queryParts.push(`MY_FRANCHISE=${myTeam}`);
+        if (dynamicUserKey) queryParts.push(`APIKEY=${dynamicUserKey}`); // Pass key down to Render
         
         const urlParams = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
-        
-        // 3. Normalize endpoint names to lowercase to perfectly match the backend automated routes
         const cleanEndpoint = endpoint.toLowerCase();
         
         try {
