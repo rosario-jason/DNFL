@@ -14,7 +14,7 @@
     // 2. CHRONOLOGICAL INJECTION ENGINE 
     // Forces the browser to load scripts in the exact order they are listed 
     // ==========================================
-    const baseUrl = "https://dnfl.live"; 
+    const baseUrl = "https://dnfl.live/"; 
 
     // Use a unique version cache-buster string based on the current date/time 
     const cacheBuster = "?v=" + new Date().getTime(); 
