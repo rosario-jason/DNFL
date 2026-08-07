@@ -16,7 +16,7 @@ const DNFLClient = {
     // ==========================================
     MFL_REQUEST_REGISTRY: [
         ['daily',    'league',           true,  ''],
-        ['daily',    'leagueStandings',  true,  '&COLUMN_NAMES=1&ALL=1']
+        ['daily',    'leagueStandings',  true,  '&COLUMN_NAMES=1&ALL=1'],
         
         // Add Additional MFL API Requests Here (Simply append a clean row matching this framework layout)
     ],
@@ -39,8 +39,8 @@ const DNFLClient = {
         const leagueId = window.league_id || null;
         const apiKey = window.apiKey || new URLSearchParams(window.location.search).get('APIKEY') || null;
 
-        // DYNAMIC HOST EXTRACTOR: Grabs 'www43.myfantasyleague.com' straight from the address bar
-        const activeHost = window.location.hostname || "api.myfantasyleague.com";
+        // DYNAMIC HOST EXTRACTOR: Grabs '://myfantasyleague.com' straight from the address bar
+        const activeHost = window.location.hostname || "://myfantasyleague.com";
 
         // Smart Year Extractor: Inspects URL path bar to find the target year safely
         let targetYear = window.current_year || null;
@@ -67,22 +67,22 @@ const DNFLClient = {
         if (cachedRecord) {
             const parsedRecord = JSON.parse(cachedRecord);
             if (currentTime - parsedRecord.timestamp < allowedTtl) {
-                console.log("DNFL Cache Hit [" + MflRequestType + "] - Loading from browser storage.");
+                console.log("[" + MflRequestType + "] - Loading from DNFL browser cache");
                 return parsedRecord.payload;
             }
         }
 
         // CACHE MISS: Query MFL directly using dynamic host extraction and exact string addition
-        try {
-            // FIX: Uses protocol + activeHost + trailing slashes to perfectly match MFL's documentation blueprint
+        try {         
+            // MFL API Execution URL:
             let mflUrl = "https://" + activeHost + "/" + targetYear + "/export?TYPE=" + MflRequestType + "&JSON=1";
             
             if (includeLeague && leagueId) mflUrl += "&L=" + leagueId.toString().trim();
             if (apiKey)                   mflUrl += "&APIKEY=" + apiKey.toString().trim();
             if (mflArgs)                  mflUrl += mflArgs.toString().trim();
+           
+            console.log("[" + MflRequestType + "] - API request from https://" + activeHost + "/" + targetYear + "/export?TYPE=" + MflRequestType);
 
-            console.log("DNFL Cache Miss [" + MflRequestType + "] - Fetching natively from trusted user IP: " + mflUrl);
-            
             const response = await fetch(mflUrl);
             if (!response.ok) throw new Error("MFL Server rejected connection request.");
             
