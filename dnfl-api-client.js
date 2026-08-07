@@ -1,4 +1,4 @@
-// dnfl-api-client.js
+// dnfl-api-client.js v1.01
 const DNFLClient = {
     // Cache tiers configurations
     CACHE_CONFIGS: {
