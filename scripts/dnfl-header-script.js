@@ -12,7 +12,7 @@
     // ==========================================
     // 2. CHRONOLOGICAL INJECTION ENGINE
     // ==========================================
-    const baseUrl = "https://dnfl.live/";
+    const baseUrl = "https://dnfl.live/scripts/";
     // Automatically creates a unique timestamp to force browser cache bypass on every single load
     const cacheBuster = "?v=" + new Date().getTime(); 
 
