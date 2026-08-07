@@ -1,7 +1,7 @@
 // dnfl-api-client.js
 const DNFLClient = {
     // Points directly to your secure, branded Render proxy cache subdomain
-    baseUrl: "https://dnfl.live",
+    baseUrl: "https://api.dnfl.live/api",
 
     async fetchData(endpoint) {
         // 1. Gather browser context variables natively supplied by MFL
