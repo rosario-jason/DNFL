@@ -1,4 +1,4 @@
-// dnfl-standings.js
+// dnfl-standings.js v1.01
 (async function() {
     // Fetch both datasets concurrently from your frontend client registry pool
     const [standingsResponse, leagueResponse] = await Promise.all([
