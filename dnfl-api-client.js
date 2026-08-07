@@ -1,6 +1,7 @@
 // dnfl-api-client.js
 const DNFLClient = {
-    baseUrl: "https://api.dnfl.live/api",
+    // Points directly to your secure, branded Render proxy cache subdomain
+    baseUrl: "https://dnfl.live",
 
     async fetchData(endpoint) {
         // 1. Gather browser context variables natively supplied by MFL
@@ -16,7 +17,6 @@ const DNFLClient = {
         let targetYear = window.current_year || null;
         if (!targetYear) {
             const pathSegments = window.location.pathname.split('/');
-            // Loops through segments to identify a 4-digit number starting with '20'
             const foundYear = pathSegments.find(segment => /^20\d{2}$/.test(segment));
             targetYear = foundYear ? foundYear : new Date().getFullYear();
         }
@@ -29,10 +29,17 @@ const DNFLClient = {
         if (dynamicUserKey) queryParts.push(`APIKEY=${dynamicUserKey}`);
         
         const urlParams = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
+        
+        // 3. Normalize endpoint names to lowercase to perfectly match the backend automated routes
         const cleanEndpoint = endpoint.toLowerCase();
         
         try {
-            const response = await fetch(`${this.baseUrl}/${cleanEndpoint}${urlParams}`);
+            // Forces clean string construction to avoid browser double-slash bugs
+            const fullTargetUrl = this.baseUrl + "/" + cleanEndpoint + urlParams;
+            
+            console.log("DNFL Debug - Tunneling to URL:", fullTargetUrl);
+            
+            const response = await fetch(fullTargetUrl);
             if (!response.ok) throw new Error(`Network failure on endpoint path: ${cleanEndpoint}`);
             return await response.json();
         } catch (error) {
