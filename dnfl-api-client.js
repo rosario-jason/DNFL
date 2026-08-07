@@ -15,8 +15,8 @@ const DNFLClient = {
     // Format: ['frequency', 'MflRequestType(case-sensitive)', includeLeague(true/false), 'mflArgs']
     // ==========================================
     MFL_REQUEST_REGISTRY: [
-        ['daily',    'league',           true,  ''],
-        ['daily',    'leagueStandings',  true,  '&COLUMN_NAMES=1&ALL=1']
+        ['daily', 'league', true,  ''],
+        ['daily', 'leagueStandings', true, '&COLUMN_NAMES=1&ALL=1']
         
         // Add Additional MFL API Requests Here (e.g. ['hourly', 'transactions', true, '&DAYS=30'])
     ],
