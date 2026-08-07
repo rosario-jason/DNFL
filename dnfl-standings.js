@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     // Fetch both datasets concurrently from your loop-driven Render proxy cache
     const [standingsResponse, leagueResponse] = await Promise.all([
-        DNFLClient.fetchData("leaguestandings"),
+        DNFLClient.fetchData("leagueStandings"),
         DNFLClient.fetchData("league")
     ]);
     
