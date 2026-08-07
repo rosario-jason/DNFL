@@ -1,6 +1,7 @@
 // dnfl-standings.js
 document.addEventListener("DOMContentLoaded", async () => {
-    // Fetch both datasets concurrently from your loop-driven Render proxy cache
+    // Fetch both datasets concurrently from your frontend client registry pool
+    // Normalization logic handles querying data from trusted user browser connections
     const [standingsResponse, leagueResponse] = await Promise.all([
         DNFLClient.fetchData("leagueStandings"),
         DNFLClient.fetchData("league")
@@ -15,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function renderDnflCustomStandings(standingsData, leagueData) {
     const tableContainer = document.getElementById("dnfl-standings-table");
-    if (!tableContainer) return; // Exit silently if the visual placeholder isn't present on this page
+    if (!tableContainer) return; // Exit silently if visual injection element placeholder is missing
 
     try {
         const franchises = standingsData.leagueStandings.franchise;
@@ -23,7 +24,7 @@ function renderDnflCustomStandings(standingsData, leagueData) {
         
         if (!franchises || !leagueDetails) throw new Error("Missing structural data maps.");
 
-        // 1. Build the Standard MFL Report Wrapper Frame
+        // Build native MFL structural matrix wrappers
         let tableHtml = `
             <div class="reportwrapper">
                 <table class="report">
@@ -43,39 +44,31 @@ function renderDnflCustomStandings(standingsData, leagueData) {
                     <tbody>
         `;
 
-        // 2. Loop Through Teams and Generate Alternating Table Rows
+        // Iterate through ranked teams applying alternating CSS rows
         franchises.forEach((team, index) => {
             const profile = leagueDetails.find(f => f.id === team.id);
-            const teamName = profile ? profile.name : `Franchise ${team.id}`;
+            const teamName = profile ? profile.name : "Franchise " + team.id;
             const logoUrl = profile ? profile.icon : "";
             const bbid = profile ? (profile.bbidBalance || "0") : "0";
 
-            // Sourced directly out of the expanded ALL=1 dataset fields
             const wins = team.h2hw || "0";
             const losses = team.h2hl || "0";
             const ties = team.h2ht || "0";
             
-            // Format to two decimal places
             const avgPf = parseFloat(team.avgpf || 0).toFixed(2);
             const avgPa = parseFloat(team.avgpa || 0).toFixed(2);
 
-            // Dynamic Row Styling Classifier Loop (Alternates row-by-row)
+            // Alternates table row classes block-by-block natively
             const rowClass = (index % 2 === 0) ? "oddtablerow" : "eventablerow";
 
             const iconMarkup = logoUrl 
-                ? `<img src="${logoUrl}" alt="" style="width:24px; height:24px; border-radius:50%; vertical-align:middle; margin-right:8px;">` 
-                : `<span style="margin-right:8px;">🏈</span>`;
+                ? "<img src='" + logoUrl + "' alt='' style='width:24px; height:24px; border-radius:50%; vertical-align:middle; margin-right:8px;'>" 
+                : "<span style='margin-right:8px;'>🏈</span>";
 
-            // Append row values mapping cleanly to MFL's tag format structure
             tableHtml += `
                 <tr class="${rowClass}">
                     <td><span>${index + 1}</span></td>
-                    <td>
-                        <span>
-                            ${iconMarkup}
-                            ${teamName}
-                        </span>
-                    </td>
+                    <td><span>${iconMarkup}${teamName}</span></td>
                     <td><span><strong>${wins}-${losses}-${ties}</strong></span></td>
                     <td><span>${avgPf}</span></td>
                     <td><span>${avgPa}</span></td>
@@ -90,7 +83,6 @@ function renderDnflCustomStandings(standingsData, leagueData) {
             </div>
         `;
 
-        // 3. Inject the compiled element into your target page placeholder
         tableContainer.innerHTML = tableHtml;
 
     } catch (error) {
