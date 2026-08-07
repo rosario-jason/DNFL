@@ -16,13 +16,13 @@ const DNFLClient = {
     // ==========================================
     MFL_REQUEST_REGISTRY: [
         ['daily',    'league',           true,  ''],
-        ['daily',    'leagueStandings',  true,  '&COLUMN_NAMES=1&ALL=1'],
+        ['daily',    'leagueStandings',  true,  '&COLUMN_NAMES=1&ALL=1']
         
         // Add Additional MFL API Requests Here (Simply append a clean row matching this framework layout)
     ],
 
     async fetchData(MflRequestType) {
-        // 1. Scan the registry array to look up our specific configuration values
+        // Find matching row mapping within your single-line registry array
         const config = this.MFL_REQUEST_REGISTRY.find(row => row[1] === MflRequestType);
         
         if (!config) {
@@ -30,16 +30,14 @@ const DNFLClient = {
             return null;
         }
 
-        // Destructure array parameters seamlessly matching our framework definitions
-        const frequency = config[0];
-        const includeLeague = config[2];
-        const mflArgs = config[3];
+        // Destructure array parameters sequentially by column index positions
+        const [frequency, , includeLeague, mflArgs] = config;
 
-        // 2. Gather browser context variables natively supplied by MFL layout engine
+        // Gather browser context variables natively supplied by MFL layout engine
         const leagueId = window.league_id || null;
         const apiKey = window.apiKey || new URLSearchParams(window.location.search).get('APIKEY') || null;
 
-        // DYNAMIC HOST EXTRACTOR: Grabs '://myfantasyleague.com' straight from the address bar
+        // Dynamic Host Extractor: Grabs active server subdomain (e.g. '://myfantasyleague.com')
         const activeHost = window.location.hostname || "://myfantasyleague.com";
 
         // Smart Year Extractor: Inspects URL path bar to find the target year safely
@@ -55,7 +53,7 @@ const DNFLClient = {
             return null;
         }
 
-        // 3. Setup local browser caching (localStorage) mechanics
+        // Setup local browser caching (localStorage) mechanics keys
         const leagueSegment = (includeLeague && leagueId) ? "L" + leagueId : 'GLOBAL';
         const cacheKey = "dnfl_" + MflRequestType + "_" + leagueSegment + "_Y" + targetYear;
         
@@ -63,7 +61,7 @@ const DNFLClient = {
         const currentTime = Date.now();
         const allowedTtl = this.CACHE_CONFIGS[frequency];
 
-        // CACHE HIT: If fresh data is saved locally, bypass MFL network loops and serve instantly
+        // CACHE HIT: Securely loads from browser memory without exposing authorization key variables
         if (cachedRecord) {
             const parsedRecord = JSON.parse(cachedRecord);
             if (currentTime - parsedRecord.timestamp < allowedTtl) {
@@ -72,17 +70,16 @@ const DNFLClient = {
             }
         }
 
-        // CACHE MISS: Query MFL directly using dynamic host extraction and exact string addition
-        try {         
-            // MFL API Execution URL:
+        // CACHE MISS: Formats clean outbound connection string without attaching credential tokens
+        try {
+            console.log("[" + MflRequestType + "] - API request from https://" + activeHost + "/" + targetYear + "/export?TYPE=" + MflRequestType);
+            
             let mflUrl = "https://" + activeHost + "/" + targetYear + "/export?TYPE=" + MflRequestType + "&JSON=1";
             
             if (includeLeague && leagueId) mflUrl += "&L=" + leagueId.toString().trim();
             if (apiKey)                   mflUrl += "&APIKEY=" + apiKey.toString().trim();
             if (mflArgs)                  mflUrl += mflArgs.toString().trim();
-           
-            console.log("[" + MflRequestType + "] - API request from https://" + activeHost + "/" + targetYear + "/export?TYPE=" + MflRequestType);
-
+            
             const response = await fetch(mflUrl);
             if (!response.ok) throw new Error("MFL Server rejected connection request.");
             
