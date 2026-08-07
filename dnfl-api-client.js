@@ -39,6 +39,9 @@ const DNFLClient = {
         const leagueId = window.league_id || null;
         const apiKey = window.apiKey || new URLSearchParams(window.location.search).get('APIKEY') || null;
 
+        // DYNAMIC HOST EXTRACTOR: Grabs 'www43.myfantasyleague.com' straight from the address bar
+        const activeHost = window.location.hostname || "api.myfantasyleague.com";
+
         // Smart Year Extractor: Inspects URL path bar to find the target year safely
         let targetYear = window.current_year || null;
         if (!targetYear) {
@@ -69,10 +72,10 @@ const DNFLClient = {
             }
         }
 
-        // CACHE MISS: Query MFL directly using string addition to prevent browser compilation bugs
+        // CACHE MISS: Query MFL directly using dynamic host extraction and exact string addition
         try {
-            // FIX: Added 'api.' subdomain and forced standard string concatenation
-            let mflUrl = "https://myfantasyleague.com" + targetYear + "/export?TYPE=" + MflRequestType + "&JSON=1";
+            // FIX: Uses protocol + activeHost + trailing slashes to perfectly match MFL's documentation blueprint
+            let mflUrl = "https://" + activeHost + "/" + targetYear + "/export?TYPE=" + MflRequestType + "&JSON=1";
             
             if (includeLeague && leagueId) mflUrl += "&L=" + leagueId.toString().trim();
             if (apiKey)                   mflUrl += "&APIKEY=" + apiKey.toString().trim();
