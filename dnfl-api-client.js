@@ -1,6 +1,6 @@
 // dnfl-api-client.js
 const DNFLClient = {
-    baseUrl: "https://api.dnfl.live",
+    baseUrl: "https://api.dnfl.live/api",
 
     async fetchData(endpoint) {
         // 1. Gather browser context variables natively supplied by MFL
