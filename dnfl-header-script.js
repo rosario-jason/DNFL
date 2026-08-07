@@ -5,8 +5,8 @@
     // Add script names here as you create them!
     // ==========================================
     const SCRIPTS_TO_LOAD = [
-        "dnfl-api-client.js",
-        "dnfl-standings.js"
+        "dnfl-api-client.js?v1.01",
+        "dnfl-standings.js?v1.01"
     ];
 
     // ==========================================
