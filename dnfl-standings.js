@@ -1,7 +1,6 @@
 // dnfl-standings.js
-document.addEventListener("DOMContentLoaded", async () => {
+(async function() {
     // Fetch both datasets concurrently from your frontend client registry pool
-    // Normalization logic handles querying data from trusted user browser connections
     const [standingsResponse, leagueResponse] = await Promise.all([
         DNFLClient.fetchData("leagueStandings"),
         DNFLClient.fetchData("league")
@@ -12,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
         console.error("DNFL Standings Error: Failed to gather necessary cached data streams.");
     }
-});
+})();
 
 function renderDnflCustomStandings(standingsData, leagueData) {
     const tableContainer = document.getElementById("dnfl-standings-table");
