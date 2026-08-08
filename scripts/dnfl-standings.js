@@ -103,7 +103,7 @@ function renderDnflCustomStandings(standingsData, leagueData) {
                     const teamName = profile.name || "Franchise " + profile.id;
                     
                     // FALLBACK IMAGE LOOKUP ENGINE: Replaces blank parameters with your ficon-dnfl asset link
-                    const logoUrl = profile.icon ? profile.icon.toString().trim() : "https://dnfl.live";
+                    const logoUrl = profile.icon ? profile.icon.toString().trim() : "https://dnfl.live/images/ficon-dnfl.png";
                     
                     // Format currency inputs cleanly matching your target output parameters style
                     const rawBbid = parseFloat(profile.bbidBalance || 0);
