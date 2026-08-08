@@ -4,15 +4,16 @@ const DNFLClient = {
     CACHE_CONFIGS: {
         weekly:    7 * 24 * 60 * 60 * 1000, 
         daily:     24 * 60 * 60 * 1000,     
-        hourly:    1 * 60 * 60 * 1000,      
-        realtime:  30 * 1000                
+        hourly:    1 * 60 * 60 * 1000,
+        halfHourly: 30 * 60 * 1000,
+        quarterHourly: 15 * 60 * 1000,
+        realtime:  30 * 1000             
     },
 
     // Dynamic API Request Registry Layout
     MFL_REQUEST_REGISTRY: [
         ['daily',    'league',           true,  ''],
         ['daily',    'leagueStandings',  true,  '&COLUMN_NAMES=1&ALL=1'],
-        ['hourly',   'transactions',     true,  '&TRANS_TYPE=WAIVER,BBID_WAIVER,TRADE&DAYS=30']
     ],
 
     // 1. SIMULTANEOUS REQUEST TRACKER
